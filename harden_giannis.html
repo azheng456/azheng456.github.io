@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MVP Shot Charts 2018-2019</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <style>
+    #img{
+      width: 600px;
+			position: absolute;
+			top: 100px;
+			left: 20px;
+      z-index: 100;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>MVP Candidates 2018-2019 Shot Chart</h1>
+
+    <img src="images/court.png" alt="Basketball Court" id="img">
+
+    <div id="option">
+    <input name="updateButton"
+           type="button"
+           value="Toggle"
+           onclick="togglemake()" />
+    </div>
+
+    <script>
+/*CHANGES:
+reduce clutter - smaller size, transparency, use stroke over fill
+add toggle to show made/missed shots
+incorporate a dashboard and show bar chart or other graphs of stats (fg%)
+document code, comment everything
+indentation
+*/
+        var svg = d3.select("body").append("svg")
+            .attr("width", 750)
+            .attr("height", 450)
+          .append("g");
+
+
+d3.csv("https://raw.githubusercontent.com/Inferno456/370-Final-Project/master/harden2019.csv", function(error, data) {
+
+    data.forEach(function(d) {
+        d.locx = +d.locx;
+        d.locy = +d.locy;
+        // d.dist = +d.dist;
+        d.made = +d.made;
+    });
+//x = 24,600
+//y = 425, 35
+  var x = d3.scale.linear().range([99,525]);
+  var y = d3.scale.linear().range([380,5]);
+
+  x.domain([d3.min(data, function(d) { return d.locx;}), d3.max(data, function(d) { return d.locx; })]);
+  y.domain([d3.min(data, function(d) { return d.locy;}), d3.max(data, function(d) { return d.locy; })]);
+
+  svg.selectAll("circle")
+    .data(data)
+    .enter().append("circle")
+       .attr("id","circle")
+      .attr("cx", function(d) { return x(d.locx); })
+      .attr("cy", function(d) { return y(d.locy); })
+      .attr("r", 5)
+      .attr("fill", function(d) {
+       if (d.made==1) {
+         return "#3F7ADE";
+       } else  {
+         return "#E3425B";
+       }})
+
+  svg.append("circle")
+    .attr("cx",650)
+    .attr("cy",70)
+    .attr("fill","#3F7ADE")
+    .attr("r",12)
+  svg.append("circle")
+      .attr("cx",650)
+      .attr("cy",170)
+      .attr("fill","#E3425B")
+      .attr("r",12)
+  svg.append("text")
+    .attr("x", 650 )
+    .attr("y", 100 )
+    .attr("font-size","15px")
+    .style("text-anchor", "middle")
+    .attr("font-family","Arial")
+    .text("Made FG");
+  svg.append("text")
+    .attr("x", 650 )
+    .attr("y", 200 )
+    .attr("font-size","15px")
+    .style("text-anchor", "middle")
+    .attr("font-family","Arial")
+    .text("Missed FG");
+
+   svg.append("text")
+     .attr("x", 500 )
+     .attr("y", 45 )
+     .attr("font-size","20px")
+     .style("text-anchor", "middle")
+     .attr("font-family","Arial")
+     .text("James Harden");
+
+});
+
+var count = 0;
+
+function togglemake(){
+  d3.select("svg").remove();
+
+  var svg = d3.select("body").append("svg")
+      .attr("width", 750)
+      .attr("height", 450)
+    .append("g");
+
+  if(count%2==0){
+      d3.csv("https://raw.githubusercontent.com/Inferno456/370-Final-Project/master/giannis2019.csv", function(error, data) {
+
+          data.forEach(function(d) {
+              d.locx = +d.locx;
+              d.locy = +d.locy;
+              // d.dist = +d.dist;
+              d.made = +d.made;
+          });
+      //x = 24,600
+      //y = 425, 35
+        var x = d3.scale.linear().range([99,525]);
+        var y = d3.scale.linear().range([380,5]);
+
+        x.domain([d3.min(data, function(d) { return d.locx;}), d3.max(data, function(d) { return d.locx; })]);
+        y.domain([d3.min(data, function(d) { return d.locy;}), d3.max(data, function(d) { return d.locy; })]);
+
+
+
+        svg.selectAll("circle")
+            .data(data)
+          .enter().append("circle")
+
+            .attr("id","circle")
+            .attr("cx", function(d) { return x(d.locx); })
+            .attr("cy", function(d) { return y(d.locy); })
+            .attr("r", 5)
+            .attr("fill", function(d) {
+
+             if (d.made==1) {
+               return "#3F7ADE";
+
+             } else  {
+               return "#E3425B";
+             }})
+             .attr("id",function(d){
+               if(d.made==0){
+                 return "#miss";
+               }
+             })
+     svg.append("circle")
+       .attr("cx",650)
+       .attr("cy",70)
+       .attr("fill","#3F7ADE")
+       .attr("r",12)
+     svg.append("circle")
+         .attr("cx",650)
+         .attr("cy",170)
+         .attr("fill","#E3425B")
+         .attr("r",12)
+     svg.append("text")
+       .attr("x", 650 )
+       .attr("y", 100 )
+       .attr("font-size","15px")
+       .style("text-anchor", "middle")
+       .attr("font-family","Arial")
+       .text("Made FG");
+     svg.append("text")
+       .attr("x", 650 )
+       .attr("y", 200 )
+       .attr("font-size","15px")
+       .style("text-anchor", "middle")
+       .attr("font-family","Arial")
+       .text("Missed FG");
+
+     svg.append("text")
+       .attr("x", 485 )
+       .attr("y", 45 )
+       .attr("font-size","20px")
+       .style("text-anchor", "middle")
+       .attr("font-family","Arial")
+       .text("Giannis Antetokounmpo");
+
+
+      });
+  } else {
+    d3.csv("https://raw.githubusercontent.com/Inferno456/370-Final-Project/master/harden2019.csv", function(error, data) {
+
+        data.forEach(function(d) {
+            d.locx = +d.locx;
+            d.locy = +d.locy;
+            // d.dist = +d.dist;
+            d.made = +d.made;
+        });
+    //x = 24,600
+    //y = 425, 35
+      var x = d3.scale.linear().range([99,525]);
+      var y = d3.scale.linear().range([380,5]);
+
+      x.domain([d3.min(data, function(d) { return d.locx;}), d3.max(data, function(d) { return d.locx; })]);
+      y.domain([d3.min(data, function(d) { return d.locy;}), d3.max(data, function(d) { return d.locy; })]);
+
+      svg.selectAll("circle")
+        .data(data)
+        .enter().append("circle")
+           .attr("id","circle")
+          .attr("cx", function(d) { return x(d.locx); })
+          .attr("cy", function(d) { return y(d.locy); })
+          .attr("r", 5)
+          .attr("fill", function(d) {
+           if (d.made==1) {
+             return "#3F7ADE";
+           } else  {
+             return "#E3425B";
+           }})
+
+     svg.append("circle")
+       .attr("cx",650)
+       .attr("cy",70)
+       .attr("fill","#3F7ADE")
+       .attr("r",12)
+     svg.append("circle")
+         .attr("cx",650)
+         .attr("cy",170)
+         .attr("fill","#E3425B")
+         .attr("r",12)
+     svg.append("text")
+       .attr("x", 650 )
+       .attr("y", 100 )
+       .attr("font-size","15px")
+       .style("text-anchor", "middle")
+       .attr("font-family","Arial")
+       .text("Made FG");
+     svg.append("text")
+       .attr("x", 650 )
+       .attr("y", 200 )
+       .attr("font-size","15px")
+       .style("text-anchor", "middle")
+       .attr("font-family","Arial")
+       .text("Missed FG");
+
+     svg.append("text")
+       .attr("x", 500 )
+       .attr("y", 45 )
+       .attr("font-size","20px")
+       .style("text-anchor", "middle")
+       .attr("font-family","Arial")
+       .text("James Harden");
+
+    });
+  }
+  count++;
+}
+
+
+    </script>
+
+  </body>
+</html>
