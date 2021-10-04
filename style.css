@@ -780,3 +780,7 @@ td {
 .gifisgif {
 	display: none;
 }
+
+a.link{
+	text-decoration: underline;
+}
